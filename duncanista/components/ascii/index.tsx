@@ -102,4 +102,5 @@ function AsciiRenderer({
   }, renderIndex)
 
   // This component returns nothing, it is a purely logical
+  return <></>
 }
