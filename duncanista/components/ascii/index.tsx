@@ -3,8 +3,9 @@
 
 import { useEffect, useRef, useState, useMemo, useLayoutEffect } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Text3D, useCursor } from '@react-three/drei'
+import { OrbitControls, Text3D } from '@react-three/drei'
 import { AsciiEffect } from 'three-stdlib'
+import { Mesh } from 'three'
 
 import * as IBMPlexMonoRegular from 'assets/ibm-plex-mono-regular.json'
 
@@ -22,16 +23,15 @@ export const Ascii = () => {
 }
 
 const MainText = () => {
-  const ref = useRef()
+  const ref = useRef<Mesh>(null)
   const [direction, setDirection] = useState(1)
-  const [starting, setStarting] = useState(-1)
   useFrame((state, delta) => {
-    ref.current.rotation.x += delta/2 * direction
-    if (ref.current.rotation.x >= 0.4) {
+    ref!.current!.rotation.x += delta/2 * direction
+    if (ref.current!.rotation.x >= 0.4) {
       setDirection(-direction)
     }
 
-    if (ref.current.rotation.x <= -0.4) {
+    if (ref!.current!.rotation.x <= -0.4) {
       setDirection(-direction)
     }
     
@@ -46,7 +46,7 @@ const MainText = () => {
         letterSpacing={-0.1}
         size={1}
         position={[-5.5, 0, 0]}
-        font={IBMPlexMonoRegular}>
+        font={IBMPlexMonoRegular as any}>
         jordan gonzález
       </Text3D>
     </mesh>
@@ -84,10 +84,10 @@ function AsciiRenderer({
   // Append on mount, remove on unmount
   useEffect(() => {
     gl.domElement.style.opacity = '0'
-    gl.domElement.parentNode.appendChild(effect.domElement)
+    gl.domElement.parentNode?.appendChild(effect.domElement)
     return () => {
       gl.domElement.style.opacity = '1'
-      gl.domElement.parentNode.removeChild(effect.domElement)
+      gl.domElement.parentNode?.removeChild(effect.domElement)
     }
   }, [effect])
 
